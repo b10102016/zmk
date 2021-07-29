@@ -1,0 +1,6 @@
+if SHIELD_HELEN80
+
+config ZMK_KEYBOARD_NAME
+    default "Helen80 with ZMK"
+
+endif
