@@ -1,0 +1,6 @@
+if SHIELD_K375TKL
+
+config ZMK_KEYBOARD_NAME
+    default "K375 TKL with ZMK"
+
+endif
