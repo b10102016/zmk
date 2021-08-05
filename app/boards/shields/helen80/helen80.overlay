@@ -38,7 +38,7 @@
             , <&gpio0 24 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
             ;
     };
-    // 0.30 for rgb DIN
+    // 0.28 for rgb DIN
 
     default_transform: keymap_transform_0 {
 		compatible = "zmk,matrix-transform";
