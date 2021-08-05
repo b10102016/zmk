@@ -20,5 +20,16 @@
 &kp LCTRL  &kp LGUI &kp LALT                        &kp SPACE                           &kp RALT &mo 1      &kp  RGUI  &kp RCTRL    &kp LEFT  &kp DOWN  &kp RIGHT
             >;
         };
+
+        fn_layer {
+            bindings = <
+&bootloader     &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans    &trans  &trans  &trans
+&trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans    &trans  &trans  &trans
+&trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans    &trans  &trans  &trans
+&trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans          &trans
+&trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans                  &trans            &trans
+&trans  &trans  &trans                          &trans                          &trans  &trans  &trans  &trans    &trans  &trans  &trans
+            >;
+        };
     };
 };
