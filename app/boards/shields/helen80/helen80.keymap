@@ -37,12 +37,12 @@
 
         mac_layer {
             bindings = <
-&trans           &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans    &trans    &trans  &trans    &trans  &trans  &trans
-&trans  &trans   &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans    &trans    &trans  &trans    &trans  &trans  &trans
-&trans  &trans   &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans    &trans    &trans  &trans    &trans  &trans  &trans
+&trans           &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans    &trans    &trans  &trans      &trans  &trans  &trans
+&trans  &trans   &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans    &trans    &trans  &trans      &trans  &trans  &trans
+&trans  &trans   &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans    &trans    &trans  &trans      &trans  &trans  &trans
 &trans  &trans   &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans    &trans            &trans
-&trans  &trans   &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans                      &trans            &trans
-&trans  &kp LALT &kp LGUI                        &trans                          &kp RGUI  &kp RALT  &trans  &trans    &trans  &trans  &trans
+&trans  &trans   &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans                      &trans              &trans
+&trans  &kp LALT &kp LGUI                        &trans                          &kp RGUI  &kp RALT  &trans  &kp RALT    &trans  &trans  &trans
             >;
         };
     };
