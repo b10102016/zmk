@@ -1,0 +1,9 @@
+file_format: "1"
+id: helen80
+name: playkeyboard helen80
+type: shield
+url: https://playkeyboard.tw/products/helen-80-%E9%8D%B5%E7%9B%A4%E5%A5%97%E4%BB%B6
+requires: [jpconstantineau_nrf52840_bluemacro840v1]
+features:
+  - keys
+  - underglow
