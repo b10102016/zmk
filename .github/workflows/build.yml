@@ -10,21 +10,21 @@ on:
       - ".github/workflows/build.yml"
       - "app/**"
   schedule:
-    - cron: '22 4 * * *'
+    - cron: "22 4 * * *"
 
 jobs:
   build:
     if: ${{ always() }}
     runs-on: ubuntu-latest
     container:
-      image: docker.io/zmkfirmware/zmk-build-arm:3.0
+      image: docker.io/zmkfirmware/zmk-build-arm:3.2
     needs: compile-matrix
     strategy:
       matrix:
         include: ${{ fromJSON(needs.compile-matrix.outputs.include-list) }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Cache west modules
         uses: actions/cache@v3.0.2
         env:
@@ -35,11 +35,11 @@ jobs:
             tools/
             zephyr/
             bootloader/
-          key: 4-${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('app/west.yml') }}
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('app/west.yml') }}
           restore-keys: |
-            4-${{ runner.os }}-build-${{ env.cache-name }}-
-            4-${{ runner.os }}-build-
-            4-${{ runner.os }}-
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
         timeout-minutes: 2
         continue-on-error: true
       - name: Initialize workspace (west init)
@@ -51,27 +51,26 @@ jobs:
       - name: Use Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '14.x'
+          node-version: "14.x"
       - name: Install @actions/artifact
         run: npm install @actions/artifact
       - name: Build and upload artifacts
-        uses: actions/github-script@v4
+        uses: actions/github-script@v7
         id: boards-list
         with:
           script: |
             const fs = require('fs');
-            const artifact = require('@actions/artifact');
-            const artifactClient = artifact.create();
+            const {default: artifact} = require('@actions/artifact');
 
             const execSync = require('child_process').execSync;
-            
+
             const buildShieldArgs = JSON.parse(`${{ matrix.shieldArgs }}`);
 
             let error = false;
 
             for (const shieldArgs of buildShieldArgs) {
               try {
-                const output = execSync(`west build -s app -p -b ${{ matrix.board }} -- ${shieldArgs.shield ? '-DSHIELD=' + shieldArgs.shield : ''} ${shieldArgs['cmake-args'] || ''}`);
+                const output = execSync(`west build -s app -p -b ${{ matrix.board }} -- ${shieldArgs.shield ? '-DSHIELD="' + shieldArgs.shield + '"' : ''} ${shieldArgs['cmake-args'] || ''}`);
 
                 console.log(`::group::${{ matrix.board}} ${shieldArgs.shield} Build`)
                 console.log(output.toString());
@@ -90,7 +89,7 @@ jobs:
                 const cmakeName = shieldArgs['cmake-args'] ? '-' + (shieldArgs.nickname || shieldArgs['cmake-args'].split(' ').join('')) : '';
                 const artifactName = `${{ matrix.board }}${shieldArgs.shield ? '-' + shieldArgs.shield : ''}${cmakeName}-zmk`;
 
-                await artifactClient.uploadArtifact(artifactName, files, rootDirectory, options);
+                await artifact.uploadArtifact(artifactName, files, rootDirectory, options);
               } catch (e) {
                 console.error(`::error::Failed to build or upload ${{ matrix.board }} ${shieldArgs.shield} ${shieldArgs['cmake-args']}`);
                 console.error(e);
@@ -111,14 +110,14 @@ jobs:
       include-list: ${{ steps.compile-list.outputs.result }}
     steps:
       - name: Join build lists
-        uses: actions/github-script@v4
+        uses: actions/github-script@v7
         id: compile-list
         with:
           script: |
             const coreCoverage = `${{ needs.core-coverage.outputs.core-include }}` || "[]";
             const boardChanges = `${{ needs.board-changes.outputs.boards-include }}` || "[]";
             const nightly = `${{ needs.nightly.outputs.nightly-include }}` || "[]";
-            
+
             const combined = [
               ...JSON.parse(coreCoverage),
               ...JSON.parse(boardChanges),
@@ -131,7 +130,7 @@ jobs:
             for (const configuration of combinedUnique) {
               if (!perBoard[configuration.board])
                 perBoard[configuration.board] = [];
-              
+
               perBoard[configuration.board].push({
                 shield: configuration.shield,
                 'cmake-args': configuration['cmake-args'],
@@ -148,17 +147,17 @@ jobs:
     runs-on: ubuntu-latest
     needs: get-changed-files
     outputs:
-      core-include: ${{ steps.core-list.outputs.result }} 
+      core-include: ${{ steps.core-list.outputs.result }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Use Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '14.x'
+          node-version: "14.x"
       - name: Install js-yaml
         run: npm install js-yaml
-      - uses: actions/github-script@v4
+      - uses: actions/github-script@v7
         id: core-list
         with:
           script: |
@@ -166,7 +165,7 @@ jobs:
             const yaml = require('js-yaml');
 
             const coreCoverage = yaml.load(fs.readFileSync('app/core-coverage.yml', 'utf8'));
-            
+
             let include = coreCoverage.board.flatMap(board =>
               coreCoverage.shield.map(shield => ({ board, shield }))
             );
@@ -180,14 +179,14 @@ jobs:
       boards-include: ${{ steps.boards-list.outputs.result }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Use Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '14.x'
+          node-version: "14.x"
       - name: Install js-yaml
         run: npm install js-yaml
-      - uses: actions/github-script@v4
+      - uses: actions/github-script@v7
         id: boards-list
         with:
           script: |
@@ -234,7 +233,7 @@ jobs:
                         };
                       }
                     } else if (hm.exposes) {
-                      return hm.exposes.flatMap(i => 
+                      return hm.exposes.flatMap(i =>
                         metadata.interconnects[i].shields.flatMap(s => boardAndShield(hm, s))
                       );
                     } else {
@@ -243,9 +242,12 @@ jobs:
                     break;
                   case "shield":
                     if (hm.features && hm.features.includes("keys")) {
-                      return hm.requires.flatMap(i => 
+                      return hm.requires.flatMap(i =>
                         metadata.interconnects[i].boards.flatMap(b => boardAndShield(b, hm))
                       );
+                    } else {
+                      console.warn("Unhandled shield without keys");
+                      return [];
                     }
                     break;
                   case "interconnect":
@@ -261,12 +263,12 @@ jobs:
       nightly-include: ${{ steps.nightly-list.outputs.result }}
     steps:
       - name: Create nightly list
-        uses: actions/github-script@v4
+        uses: actions/github-script@v7
         id: nightly-list
         with:
           script: |
             const metadata = JSON.parse(`${{ needs.get-grouped-hardware.outputs.organized-metadata }}`);
-            
+
             let includeOnboard = metadata.onboard.flatMap(b => {
               if (b.siblings) {
                 return b.siblings.map(board => ({
@@ -304,15 +306,15 @@ jobs:
       organized-metadata: ${{ steps.organize-metadata.outputs.result }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Use Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '14.x'
+          node-version: "14.x"
       - name: Install js-yaml
         run: npm install js-yaml
       - name: Aggregate Metadata
-        uses: actions/github-script@v4
+        uses: actions/github-script@v7
         id: aggregate-metadata
         with:
           script: |
@@ -326,11 +328,11 @@ jobs:
               yaml.loadAll(fs.readFileSync(f, "utf8"))
             );
 
-            return JSON.stringify(aggregated).replace(/\\/g,"\\\\");
+            return JSON.stringify(aggregated).replace(/\\/g,"\\\\").replace(/`/g,"\\`");
           result-encoding: string
 
       - name: Organize Metadata
-        uses: actions/github-script@v4
+        uses: actions/github-script@v7
         id: organize-metadata
         with:
           script: |
@@ -373,7 +375,7 @@ jobs:
             },
             { onboard: [], interconnects: {} });
 
-            return JSON.stringify(grouped).replace(/\\/g,"\\\\");
+            return JSON.stringify(grouped).replace(/\\/g,"\\\\").replace(/`/g,"\\`");
           result-encoding: string
   get-changed-files:
     if: ${{ github.event_name != 'schedule' }}
@@ -386,8 +388,8 @@ jobs:
       - uses: Ana06/get-changed-files@v2.0.0
         id: changed-files
         with:
-          format: 'json'
-      - uses: actions/github-script@v4
+          format: "json"
+      - uses: actions/github-script@v7
         id: board-changes
         with:
           script: |
@@ -395,7 +397,7 @@ jobs:
             const boardChanges = changedFiles.filter(f => f.startsWith('app/boards'));
             return boardChanges.length ? 'true' : 'false';
           result-encoding: string
-      - uses: actions/github-script@v4
+      - uses: actions/github-script@v7
         id: core-changes
         with:
           script: |
