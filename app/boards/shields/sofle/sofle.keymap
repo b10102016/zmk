@@ -80,7 +80,7 @@
             bindings = <
 &bt BT_CLR   &bt BT_SEL 0 &bt BT_SEL 1 &bt BT_SEL 2 &bt BT_SEL 3 &bt BT_SEL 4             &trans    &trans    &trans   &kp INS   &kp HOME &kp PG_UP
 &out OUT_TOG &kp INS      &kp PSCRN    &kp K_CMENU  &trans       &trans                   &trans    &trans    &kp UP   &kp DEL   &kp END  &kp PG_DN
-&kp CLCK     &kp INS      &kp HOME     &kp PG_UP    &trans       &kp CLCK                 &trans    &kp LEFT  &kp DOWN &kp RIGHT &kp      &trans
+&kp CLCK     &kp INS      &kp HOME     &kp PG_UP    &trans       &kp CLCK                 &trans    &kp LEFT  &kp DOWN &kp RIGHT &kp SQT  &trans
 &trans       &kp DEL      &kp END      &kp PG_DN    &kp K_PASTE  &trans  &trans   &trans  &trans    &trans    &trans   &trans    &trans   &trans
                         &trans       &trans       &trans       &trans  &trans   &trans  &trans    &trans    &trans   &trans
             >;
