@@ -3,8 +3,8 @@ title: Hold-Tap Behavior
 sidebar_label: Hold-Tap
 ---
 
-import Tabs from '@theme/Tabs';
-import TabItem from '@theme/TabItem';
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
 
 ## Summary
 
@@ -83,6 +83,18 @@ For example, if you press `&mt LEFT_SHIFT A` and then release it without pressin
 };
 ```
 
+#### `hold-while-undecided`
+
+If enabled, the hold behavior will immediately be held on hold-tap press, and will release before the behavior is sent in the event the hold-tap resolves into a tap. With most modifiers this will not affect typing, and is useful for using modifiers with the mouse.
+
+:::note Alt/Win/Cmd behavior
+In some applications/desktop environments, pressing Alt keycodes by itself will have its own behavior like activate a menu and Gui keycodes will bring up the start menu or an application launcher.
+:::
+
+#### `hold-while-undecided-linger`
+
+If your tap behavior activates the same modifier as the hold behavior, and you want to avoid a double tap when transitioning from the hold to the tap, you can use `hold-while-undecided-linger`. When enabled, the hold behavior will continue to be held until _after_ the tap behavior is released. For example, if the hold is `&kp LGUI` and the tap is `&sk LGUI`, then with `hold-while-undecided-linger` enabled, the host will see `LGUI` held down continuously until the sticky key is finished, instead of seeing a release and press when transitioning from hold to sticky key.
+
 #### Positional hold-tap and `hold-trigger-key-positions`
 
 Including `hold-trigger-key-positions` in your hold-tap definition turns on the positional hold-tap feature. With positional hold-tap enabled, if you press any key **NOT** listed in `hold-trigger-key-positions` before `tapping-term-ms` expires, it will produce a tap.
@@ -132,7 +144,7 @@ the hold-tap. For homerow mods, this is not always ideal, because it prevents co
 
 #### Using different behavior types with hold-taps
 
-You can create instances of hold-taps invoking most [behavior types](../features/keymaps.md#behaviors) for hold or tap actions, by referencing their node labels in the `bindings` value.
+You can create instances of hold-taps invoking most [behavior types](../features/keymaps.mdx#behaviors) for hold or tap actions, by referencing their node labels in the `bindings` value.
 The two parameters that are passed to the hold-tap in your keymap will be forwarded to the referred behaviors, first one to the hold behavior and second one to the tap.
 
 If you use behaviors that accept no parameters such as [mod-morphs](mod-morph.md) or [macros](macros.md), you can pass a dummy parameter value such as `0` to the hold-tap when you use it in your keymap.
@@ -289,7 +301,7 @@ A popular method of implementing Autoshift in ZMK involves a C-preprocessor macr
 
 <TabItem value="mo_tog">
 
-This hold-tap example implements a [momentary-layer](layers.md/#momentary-layer) when the keybind is held and a [toggle-layer](layers.md/#toggle-layer) when it is tapped. Similar to the Autoshift and Sticky Hold use-cases, a `MO_TOG(layer)` macro is defined such that the `&mo` and `&tog` behaviors can target a single layer.
+This hold-tap example implements a [momentary-layer](layers.md#momentary-layer) when the keybind is held and a [toggle-layer](layers.md#toggle-layer) when it is tapped. Similar to the Autoshift and Sticky Hold use-cases, a `MO_TOG(layer)` macro is defined such that the `&mo` and `&tog` behaviors can target a single layer.
 
 ```dts title="Hold-Tap Example: Momentary layer on Hold, Toggle layer on Tap"
 #include <dt-bindings/zmk/keys.h>
